@@ -1,20 +1,27 @@
-<!-- This launch file is created for zed remote mapping.
+<!-- This launch file is created for zed2(camera_2) remote mapping.
 
-     Command "roslaunch rtabmap_test zed_remote_mapping.launch,
-     you can play zed remote mapping with rtabmap.
+     Command "roslaunch rtabmap_test zed_remote_mapping.launch",
+     you can start zed remote mapping with rtabmap.
 
-     Parameters are changed as shown below from "/ rtabmap_ros / rtabmap.launch".
+     Parameters are changed as shown below from "/rtabmap_ros/rtabmap.launch".
 
+    <For remote mapping>
      - stereo := true
-     - stereo_namespace := /camera/throttled
-     - left_image_topic := /camera/zed_nodelet/left/image_rect_color
-     - right_image_topic := /camera/zed_nodelet/right/image_rect_color
-     - left_camera_info_topic:=/camera/zed_nodelet/left/camera_info
-     - right_camera_info_topic := /camera/zed_nodelet/right/camera_info
-     - rtabmap_args :=  delete_db_on_start
-     - compressed := true -->
+     - stereo_namespace        := /robot2/throttled
+     - left_image_topic        := /robot2/zed_nodelet/left/image_rect_color
+     - right_image_topic       := /robot2/zed_nodelet/right/image_rect_color
+     - left_camera_info_topic  := /robot2/zed_nodelet/left/camera_info
+     - right_camera_info_topic := /robot2/zed_nodelet/right/camera_info
+     - rtabmap_args            := delete_db_on_start
+     - compressed              := true
 
-
+    <For multi session mapping>
+     - frame_id                := camera2_camera_link
+     - map_frame_id            := camera2_map
+     - namespace               := robot2
+     - vo_frame_id             := camera2_odom
+     - odom_guess_frame_id     := camera2_camera_link
+     -->
 
 
 <launch>
@@ -32,6 +39,7 @@
         Example:
            $ roslaunch rtabmap_ros bumblebee.launch -->
      
+
   <!-- Choose between depth and stereo, set both to false to do only scan -->      
   <arg name="stereo"                    default="true"/>
   <arg     if="$(arg stereo)" name="depth"  default="false"/>
@@ -53,12 +61,12 @@
   <arg name="gui_cfg"                 default="~/.ros/rtabmap_gui.ini" />
   <arg name="rviz_cfg"                default="$(find rtabmap_ros)/launch/config/rgbd.rviz" />
   
-  <arg name="frame_id"                default="camera_link"/>     <!-- Fixed frame id, you may set "base_link" or "base_footprint" if they are published -->
+  <arg name="frame_id"                default="camera2_camera_link"/>     <!-- Fixed frame id, you may set "base_link" or "base_footprint" if they are published -->
   <arg name="odom_frame_id"           default=""/>                <!-- If set, TF is used to get odometry instead of the topic -->
-  <arg name="map_frame_id"            default="map"/>
+  <arg name="map_frame_id"            default="camera2_map"/>
   <arg name="ground_truth_frame_id"   default=""/>     <!-- e.g., "world" -->
   <arg name="ground_truth_base_frame_id" default=""/>  <!-- e.g., "tracker", a fake frame matching the frame "frame_id" (but on different TF tree) -->
-  <arg name="namespace"               default="rtabmap"/>
+  <arg name="namespace"               default="robot2"/>
   <arg name="database_path"           default="~/.ros/rtabmap.db"/>
   <arg name="queue_size"              default="10"/>
   <arg name="wait_for_transform"      default="0.2"/>
@@ -72,18 +80,19 @@
   <arg     if="$(arg stereo)" name="approx_sync"  default="false"/>
   <arg unless="$(arg stereo)" name="approx_sync"  default="$(arg depth)"/>         
    
-  <!-- RGB-D related topics -->
+  <!-- RGB-D related topics-->
   <arg name="rgb_topic"               default="/camera/rgb/image_rect_color" />
   <arg name="depth_topic"             default="/camera/depth_registered/image_raw" />
   <arg name="camera_info_topic"       default="/camera/rgb/camera_info" />
   <arg name="depth_camera_info_topic" default="$(arg camera_info_topic)" />
+
   
   <!-- stereo related topics -->
-  <arg name="stereo_namespace"        default="/camera/throttled"/>
-  <arg name="left_image_topic"        default="/camera/zed_nodelet/left/image_rect_color" />
-  <arg name="right_image_topic"       default="/camera/zed_nodelet/right/image_rect_color" />      <!-- using grayscale image for efficiency -->
-  <arg name="left_camera_info_topic"  default="/camera/zed_nodelet/left/camera_info" />
-  <arg name="right_camera_info_topic" default="/camera/zed_nodelet/right/camera_info" />
+  <arg name="stereo_namespace"        default="/robot2/throttled"/>
+  <arg name="left_image_topic"        default="/robot2/zed_nodelet/left/image_rect_color" />
+  <arg name="right_image_topic"       default="/robot2/zed_nodelet/right/image_rect_color" />      <!-- using grayscale image for efficiency -->
+  <arg name="left_camera_info_topic"  default="/robot2/zed_nodelet/left/camera_info" />
+  <arg name="right_camera_info_topic" default="/robot2/zed_nodelet/right/camera_info" />
   
   <!-- Already synchronized RGB-D related topic, with rtabmap_ros/rgbd_sync nodelet -->
   <arg name="rgbd_sync"               default="false"/>         <!-- pre-sync rgb_topic, depth_topic, camera_info_topic -->
@@ -109,14 +118,14 @@
    
   <arg name="visual_odometry"          default="true"/>          <!-- Launch rtabmap visual odometry node -->
   <arg name="icp_odometry"             default="false"/>         <!-- Launch rtabmap icp odometry node -->
-  <arg name="odom_topic"               default="odom"/>          <!-- Odometry topic name -->
+  <arg name="odom_topic"               default="camera2_odom"/>          <!-- Odometry topic name -->
   <arg name="vo_frame_id"              default="$(arg odom_topic)"/> <!-- Visual/Icp odometry frame ID for TF -->
   <arg name="publish_tf_odom"          default="true"/>
   <arg name="odom_tf_angular_variance" default="1"/>             <!-- If TF is used to get odometry, this is the default angular variance -->
   <arg name="odom_tf_linear_variance"  default="1"/>             <!-- If TF is used to get odometry, this is the default linear variance -->
   <arg name="odom_args"                default=""/>              <!-- More arguments for odometry (overwrite same parameters in rtabmap_args) -->
   <arg name="odom_sensor_sync"         default="false"/>
-  <arg name="odom_guess_frame_id"        default=""/>
+  <arg name="odom_guess_frame_id"        default="camera2_camera_link"/>
   <arg name="odom_guess_min_translation" default="0"/>
   <arg name="odom_guess_min_rotation"    default="0"/>
   <arg name="odom_max_rate"            default="0"/>
@@ -155,7 +164,9 @@
 
   <!-- Nodes -->
   <group ns="$(arg namespace)">
-     
+    <param name="tf_prefix" value="robot2"/>
+    
+    
     <!-- relays -->
     <group if="$(arg depth)">
       <group unless="$(arg subscribe_rgbd)">
@@ -212,7 +223,7 @@
     <group unless="$(arg icp_odometry)">
       <group if="$(arg visual_odometry)">
       
-        <!-- RGB-D Odometry -->
+        <!-- RGB-D Odometry-->
         <node unless="$(arg stereo)" pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="$(arg output)" args="$(arg rtabmap_args) $(arg odom_args)" launch-prefix="$(arg launch_prefix)">
           <remap from="rgb/image"       to="$(arg rgb_topic_relay)"/>
           <remap from="depth/image"     to="$(arg depth_topic_relay)"/>
@@ -239,8 +250,11 @@
           <param name="max_update_rate"             type="double" value="$(arg odom_max_rate)"/>
         </node>
 
+
         <!-- Stereo Odometry -->
         <node if="$(arg stereo)" pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" output="$(arg output)" args="$(arg rtabmap_args) $(arg odom_args)" launch-prefix="$(arg launch_prefix)">
+          
+
           <remap from="left/image_rect"        to="$(arg left_image_topic_relay)"/>
           <remap from="right/image_rect"       to="$(arg right_image_topic_relay)"/>
           <remap from="left/camera_info"       to="$(arg left_camera_info_topic)"/>
