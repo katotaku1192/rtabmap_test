@@ -406,8 +406,8 @@
   <!-- Visualization RVIZ -->
   <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_cfg)"/>
   <node if="$(arg rviz)" pkg="nodelet" type="nodelet" name="points_xyzrgb" args="standalone rtabmap_ros/point_cloud_xyzrgb" output="$(arg output)">
-    <remap if="$(arg stereo)" from="left/image"        to="$(arg left_image_topic_relay)"/>
-    <remap if="$(arg stereo)" from="right/image"       to="$(arg right_image_topic_relay)"/>
+    <remap if="$(arg stereo)" from="left/image_rect"        to="$(arg left_image_topic_relay)"/>
+    <remap if="$(arg stereo)" from="right/image_rect"       to="$(arg right_image_topic_relay)"/>
     <remap if="$(arg stereo)" from="left/camera_info"  to="$(arg left_camera_info_topic)"/>
     <remap if="$(arg stereo)" from="right/camera_info" to="$(arg right_camera_info_topic)"/>
     <remap unless="$(arg subscribe_rgbd)" from="rgb/image"         to="$(arg rgb_topic_relay)"/>

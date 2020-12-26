@@ -163,7 +163,7 @@
 
   <!-- Nodes -->
   <group ns="$(arg namespace)">
-    <param name="tf_prefix" value="robot2"/>
+    <param name="tf_prefix" value="robot1"/>
 
      
     <!-- relays -->

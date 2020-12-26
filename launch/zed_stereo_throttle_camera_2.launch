@@ -5,7 +5,7 @@ You can start remote multi-session mapping with host PC.
 
 <launch>
 
-  <arg name="rate"        default="5"/>     <!-- Rate we want to publish over network -->
+  <arg name="rate"        default="2"/>     <!-- Rate we want to publish over network -->
   <arg name="approx_sync" default="false"/> <!-- false for zed camera -->
   <arg name="resolution"  default="3"/>     <!-- Using VGA to use less bandwidth -->
   <arg name="stereo_sync"   default="false"/>
@@ -17,7 +17,7 @@ You can start remote multi-session mapping with host PC.
 
     <include file="$(find rtabmap_test)/launch/include/zed_camera_2_nodelet.launch">
       <arg name="publish_tf" value="false" />
-      <arg name="frame_rate" value="15" /> <!-- lowest frame rate we can set with the driver -->
+      <arg name="frame_rate" value="1" /> <!-- lowest frame rate we can set with the driver -->
       <arg name="resolution" value="$(arg resolution)"/> 
       <arg name="nodelet_manager_name" value="camera_nodelet_manager"/> 
     </include>
